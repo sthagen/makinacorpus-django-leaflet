@@ -2,11 +2,21 @@
 CHANGELOG
 =========
 
-0.27.0 (unreleased)
+0.27.1 (2020-07-31)
 -------------------
 
+- Replace link to geojsonlint.com with geojson.io. #298
+
+0.27.0 (2020-07-03)
+-------------------
+
+- Drop support for Django < 1.11 and Python 2
+- Upgrade proj4js to 2.6.1 and Proj4Leaflet to 1.0.2 (#287)
 - Update Czech translations, add Slovak translations #269
 - Add Arabic translation #274
+- Precision fixes #280 #291
+- Display the map on mobile (Fixes #241) #292
+- Updated Leaflet to 1.6.0
 
 0.26.0 (2019-12-06)
 -------------------

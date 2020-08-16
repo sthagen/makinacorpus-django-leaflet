@@ -1,6 +1,3 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 from django.contrib.admin import ModelAdmin
 from django.core.exceptions import ImproperlyConfigured
 
@@ -17,11 +14,11 @@ except (ImportError, ImproperlyConfigured):
 from .forms.widgets import LeafletWidget
 
 
-class LeafletGeoAdminMixin(object):
+class LeafletGeoAdminMixin:
     widget = LeafletWidget
     map_template = 'leaflet/admin/widget.html'
     modifiable = True
-    map_width = '100%'
+    map_width = 'min(calc(100vw - 30px), 720px)'
     map_height = '400px'
     display_raw = False
     settings_overrides = {}
@@ -46,7 +43,7 @@ class LeafletGeoAdminMixin(object):
             kwargs['widget'] = self._get_map_widget(db_field, widget)
             return db_field.formfield(**kwargs)
         else:
-            return super(LeafletGeoAdminMixin, self).formfield_for_dbfield(db_field, request, **kwargs)
+            return super().formfield_for_dbfield(db_field, request, **kwargs)
 
     def _get_map_widget(self, db_field, widget):
         """

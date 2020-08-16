@@ -1,13 +1,6 @@
-from __future__ import unicode_literals
-
-import django
+from django.contrib.gis.forms.fields import GeometryField as BaseGeometryField
 
 from .widgets import LeafletWidget
-
-if django.VERSION >= (1, 6, 0):
-    from django.contrib.gis.forms.fields import GeometryField as BaseGeometryField
-else:
-    from .backport import GeometryField as BaseGeometryField
 
 
 class GeometryField(BaseGeometryField):
@@ -15,7 +8,7 @@ class GeometryField(BaseGeometryField):
     geom_type = 'GEOMETRY'
 
     def __init__(self, *args, **kwargs):
-        super(GeometryField, self).__init__(*args, **kwargs)
+        super().__init__(*args, **kwargs)
         self.widget.geom_type = self.geom_type
 
 

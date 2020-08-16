@@ -14,7 +14,7 @@ The easy way :
 
 ::
 
-    <script type="text/javascript">
+    <script>
         function map_init_basic (map, options) {
             ...
             L.marker([50.5, 30.5]).addTo(map);
@@ -31,7 +31,7 @@ If you don't want to expose global callbacks :
 
 ::
 
-    <script type="text/javascript">
+    <script>
         window.addEventListener("map:init", function (e) {
             var detail = e.detail;
             ...
@@ -51,13 +51,6 @@ For Internet Explorer support, we fallback on jQuery if available ::
         L.marker([50.5, 30.5]).addTo(detail.map);
         ...
     });
-
-If you want to support archaic browsers **and** still avoid jQuery,
-*django-leaflet* comes with a minimalist polyfill for events.
-Add it in ``<head>`` this way ::
-
-    <!--[if IE 8]><script src="{% static "leaflet/eventlister.ie8.js" %}"></script><!--<![endif]-->
-    <!--[if lt IE 8]><script src="{% static "leaflet/eventlister.ie6-7.js" %}"></script><!--<![endif]-->
 
 
 Customize map size
@@ -114,15 +107,21 @@ Initial map center and zoom level
 ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
 
 In addition to limiting your maps with ``SPATIAL_EXTENT``, you can also specify
-initial map center, default, min and max zoom level::
+initial map center, default, min and max zoom level, coordinate values precision::
 
     'DEFAULT_CENTER': (6.0, 45.0),
     'DEFAULT_ZOOM': 16,
     'MIN_ZOOM': 3,
     'MAX_ZOOM': 18,
+    'DEFAULT_PRECISION': 6,
 
 The tuple/list must contain (lat,lng) coords.
 
+Notice that if you do not use ``SPATIAL_EXTENT``, but you do specify a value for
+the ``DEFAULT_ZOOM`` entry, you **must**  also indicate a ``DEFAULT_CENTER``,
+or you will get an empty, not working pane, for all new database records without 
+a default geometry value.  This is regarded as an error in the configuration, not
+a bug in the software.
 
 Default tiles layer
 ~~~~~~~~~~~~~~~~~~~
@@ -180,7 +179,7 @@ In a template:
 
     {% block javascript %}
     {{ block.super }}
-    <script type="text/javascript">
+    <script>
     function map_init(map, options) {
         {% include 'shared/overlays.html' %}
     }

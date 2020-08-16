@@ -1,20 +1,12 @@
-# -*- coding: utf-8 -*-
-from __future__ import unicode_literals
-
 import json
 
 from django import template
 from django.conf import settings
-
-try:
-    import six
-except ImportError:
-    from django.utils import six
-
+from django.core.serializers.json import DjangoJSONEncoder
 from django.utils.encoding import force_text
 
 from leaflet import (app_settings, SPATIAL_EXTENT, SRID, PLUGINS, PLUGINS_DEFAULT,
-                     PLUGIN_ALL, PLUGIN_FORMS, JSONLazyTranslationEncoder)
+                     PLUGIN_ALL, PLUGIN_FORMS)
 
 
 register = template.Library()
@@ -45,14 +37,10 @@ def leaflet_js(plugins=None):
     plugin_names = _get_plugin_names(plugins)
     with_forms = PLUGIN_FORMS in plugin_names or PLUGIN_ALL in plugin_names
     FORCE_IMAGE_PATH = app_settings.get('FORCE_IMAGE_PATH')
-    template_options = hasattr(settings, 'TEMPLATES') \
-        and len(settings.TEMPLATES) \
-        and settings.TEMPLATES[0].get('OPTIONS', None)
+    template_options = settings.TEMPLATES[0].get('OPTIONS', None)
 
     if template_options and 'debug' in template_options:
         debug = template_options['debug']
-    elif hasattr(settings, 'TEMPLATE_DEBUG'):
-        debug = settings.TEMPLATE_DEBUG
     else:
         debug = False
 
@@ -99,6 +87,7 @@ def leaflet_map(name, callback=None, fitextent=True, creatediv=True,
         fitextent=fitextent,
         center=instance_app_settings['DEFAULT_CENTER'],
         zoom=instance_app_settings['DEFAULT_ZOOM'],
+        precision=instance_app_settings['DEFAULT_PRECISION'],
         minzoom=instance_app_settings['MIN_ZOOM'],
         maxzoom=instance_app_settings['MAX_ZOOM'],
         layers=[(force_text(label), url, attrs) for (label, url, attrs) in instance_app_settings.get('TILES')],
@@ -113,11 +102,11 @@ def leaflet_map(name, callback=None, fitextent=True, creatediv=True,
     return {
         # templatetag options
         'name': name,
-        'loadevents': json.dumps(loadevent.split(), cls=JSONLazyTranslationEncoder),
+        'loadevents': json.dumps(loadevent.split(), cls=DjangoJSONEncoder),
         'creatediv': creatediv,
         'callback': callback,
         # initialization options
-        'djoptions': json.dumps(djoptions, cls=JSONLazyTranslationEncoder),
+        'djoptions': json.dumps(djoptions, cls=DjangoJSONEncoder),
         # settings
         'NO_GLOBALS': instance_app_settings.get('NO_GLOBALS'),
     }
@@ -132,7 +121,7 @@ def leaflet_json_config():
         settings_as_json['SPATIAL_EXTENT'] = {'xmin': xmin, 'ymin': ymin,
                                               'xmax': xmax, 'ymax': ymax}
 
-    return json.dumps(settings_as_json, cls=JSONLazyTranslationEncoder)
+    return json.dumps(settings_as_json, cls=DjangoJSONEncoder)
 
 
 def _get_plugin_names(plugin_names_from_tag_parameter):
@@ -142,7 +131,7 @@ def _get_plugin_names(plugin_names_from_tag_parameter):
     :param pluging_names_parameter:
     :return:
     """
-    if isinstance(plugin_names_from_tag_parameter, (six.binary_type, six.text_type)):
+    if isinstance(plugin_names_from_tag_parameter, str):
         names = plugin_names_from_tag_parameter.split(',')
         return [n.strip() for n in names]
     else:
