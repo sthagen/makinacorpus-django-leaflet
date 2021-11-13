@@ -2,10 +2,15 @@
 CHANGELOG
 =========
 
-0.28.2 (unreleased)
+0.28.3 (unreleased)
 -------------------
 
 -
+
+0.28.2 (2021-10-25)
+-------------------
+
+- Fix field_store_class usage in map template.
 
 0.28.1 (2021-06-07)
 -------------------
