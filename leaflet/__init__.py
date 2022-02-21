@@ -1,5 +1,4 @@
 from collections import OrderedDict
-from distutils.version import LooseVersion
 from urllib.parse import urlparse
 
 import django
@@ -12,7 +11,7 @@ from .utils import memoized_lazy_function, ListWithLazyItems, ListWithLazyItemsR
 
 
 DEFAULT_TILES = [(_('OSM'), '//{s}.tile.openstreetmap.org/{z}/{x}/{y}.png',
-                  '© <a href="http://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors')]
+                  '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors')]
 
 LEAFLET_CONFIG = getattr(settings, 'LEAFLET_CONFIG', {})
 
@@ -184,5 +183,5 @@ def _normalize_plugins_config():
     PLUGINS['__is_normalized__'] = True
 
 
-if LooseVersion(django.__version__) < LooseVersion('3.2'):
+if django.VERSION < (3, 2):
     default_app_config = 'leaflet.apps.LeafletConfig'
