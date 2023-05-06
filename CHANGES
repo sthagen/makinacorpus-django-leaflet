@@ -2,11 +2,17 @@
 CHANGELOG
 =========
 
-0.28.4 (unreleased)
+0.29.1 (unreleased)
 -------------------
 
-- Support Django 4.0 and 4.1, Python 3.10.
+-
+
+0.29.0 (2023-05-02)
+-------------------
+
+- Support Django 4.0, 4.1 and 4.2, and Python 3.10 and 3.11.
 - Drop support for Django < 3.2 and Python < 3.7.
+- Removed map_width / map_height. Moved CSS and height/width to custom CSS file #363
 
 0.28.3 (2022-06-08)
 -------------------

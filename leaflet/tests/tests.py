@@ -2,8 +2,7 @@ import django
 from django.contrib.admin import ModelAdmin, StackedInline
 from django.contrib.admin.options import BaseModelAdmin, InlineModelAdmin
 from django.contrib.gis.db import models as gismodels
-from django.contrib.staticfiles.storage import StaticFilesStorage, staticfiles_storage
-from django.templatetags.static import static
+from django.contrib.staticfiles.storage import StaticFilesStorage
 from django.test import SimpleTestCase
 
 from .. import PLUGINS, PLUGIN_FORMS, _normalize_plugins_config
@@ -18,39 +17,6 @@ class DummyStaticFilesStorage(StaticFilesStorage):
 
     def url(self, name):
         raise ValueError
-
-
-class AppLoadingTest(SimpleTestCase):
-
-    def test_init_with_non_default_staticfiles_storage(self):
-        """
-        Non-default STATICFILES_STORAGE (ex. django.contrib.staticfiles.storage.ManifestStaticFilesStorage)
-        might raise ValueError when file could not be found by this storage and DEBUG is set to False.
-
-        Ensure that _normalize_plugins_config calls `static` lazily, in order to let the `collectstatic` command to run.
-
-        """
-
-        try:
-            with self.settings(STATICFILES_STORAGE='leaflet.tests.tests.DummyStaticFilesStorage',
-                               STATIC_ROOT="/", DEBUG=False):
-                staticfiles_storage._setup()  # reset already initialized (and memoized) default STATICFILES_STORAGE
-
-                with self.assertRaises(ValueError):
-                    # Ensure that our DummyStaticFilesStorage is unable to process `static` calls right now
-                    static("a")
-
-                PLUGINS.update({
-                    'a': {'css': 'a'},
-                })
-
-                PLUGINS.pop('__is_normalized__')
-                # This would raise if `static` calls are not lazy
-                _normalize_plugins_config()
-        finally:
-            # Reset the STATICFILES_STORAGE to a default one
-            staticfiles_storage._setup()
-            _normalize_plugins_config()
 
 
 class PluginListingTest(SimpleTestCase):
@@ -198,8 +164,6 @@ class BaseLeafletGeoAdminTest:
         widget = self.formfield.widget
         self.assertEqual(widget.geom_type, 'POINT')
         self.assertEqual(widget.settings_overrides, {'DEFAULT_CENTER': (8.0, 3.15), })
-        self.assertFalse(widget.map_height is None)
-        self.assertFalse(widget.map_width is None)
         self.assertTrue(widget.modifiable)
 
     def test_widget_media(self):
@@ -344,5 +308,13 @@ class LeafletGeoAdminMapTest(LeafletGeoAdminTest):
     def test_widget_template_overriden(self):
         widget = self.formfield.widget
         output = widget.render('geom', '', {'id': 'geom'})
-        self.assertIn(".module .leaflet-draw ul", output)
         self.assertIn('<div id="geom-div-map">', output)
+        link_type = 'type="text/css" ' if django.get_version() < '4.1' else ''
+        self.assertEqual(
+            list(widget.media.render_css()),
+            [
+                f'<link href="/static/leaflet/leaflet.css" {link_type}media="screen" rel="stylesheet">',
+                f'<link href="/static/leaflet/leaflet_django.css" {link_type}media="screen" rel="stylesheet">',
+                f'<link href="/static/leaflet/draw/leaflet.draw.css" {link_type}media="screen" rel="stylesheet">',
+            ]
+        )
