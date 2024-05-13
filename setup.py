@@ -15,7 +15,7 @@ with open(os.path.join(here, 'CHANGES')) as f:
 
 setup(
     name='django-leaflet',
-    version='0.29.2dev',
+    version='0.30.1dev',
     author='Mathieu Leplatre',
     author_email='mathieu.leplatre@makina-corpus.com',
     url='https://github.com/makinacorpus/django-leaflet',
@@ -23,6 +23,7 @@ setup(
     description="Use Leaflet in your django projects",
     long_description=long_descr,
     license='LPGL, see LICENSE file.',
+    python_requires='>=3.8',
     install_requires=requires,
     extras_require={
         'docs': ['sphinx', 'sphinx-autobuild'],
@@ -39,9 +40,10 @@ setup(
         'Framework :: Django',
         'Development Status :: 5 - Production/Stable',
         'Programming Language :: Python :: 3 :: Only',
-        'Programming Language :: Python :: 3.7',
         'Programming Language :: Python :: 3.8',
         'Programming Language :: Python :: 3.9',
         'Programming Language :: Python :: 3.10',
+        'Programming Language :: Python :: 3.11',
+        'Programming Language :: Python :: 3.12',
     ],
 )

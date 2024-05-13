@@ -16,6 +16,16 @@ L.Control.ResetView = L.Control.extend({
             };
 
         L.Util.setOptions(this, options);
+
+        const titleElement = document.getElementById("Control-ResetView-TITLE");
+        const iconElement = document.getElementById("Control-ResetView-TITLE");
+
+        if (!!titleElement) {
+            L.Control.ResetView.TITLE = JSON.parse(titleElement.textContent);
+        }
+        if (!!iconElement) {
+            L.Control.ResetView.ICON = JSON.parse(iconElement.textContent);
+        }
     },
 
     onAdd: function (map) {
@@ -28,6 +38,7 @@ L.Control.ResetView = L.Control.extend({
         var link = L.DomUtil.create('a', 'leaflet-control-zoom-out leaflet-bar-part', container);
         link.href = '#';
         link.title = L.Control.ResetView.TITLE;
+
         link.style.backgroundImage = L.Control.ResetView.ICON;
 
         L.DomEvent.addListener(link, 'click', L.DomEvent.stopPropagation)
@@ -254,3 +265,9 @@ L.Map.djangoMap = function (id, options) {
         }
     }
 };
+
+const imgPathElement = document.getElementById("force-img-path");
+
+if (!!imgPathElement) {
+    L.Icon.Default.imagePath = JSON.parse(imgPathElement.textContent);
+}
