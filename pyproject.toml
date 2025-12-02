@@ -2,10 +2,13 @@
 requires = ["setuptools>=64"]
 build-backend = "setuptools.build_meta"
 
+[tool.setuptools]
+packages = ['leaflet']
+
 [project]
 name = "django-leaflet"
 description = "A Django map widget using Leaflet"
-version = "0.32.1dev"
+version = "0.33.1dev"
 readme = "README.rst"
 license = "LGPL-3.0-only"
 authors = [
@@ -14,7 +17,7 @@ authors = [
 maintainers = [
   {name = "Gagaro", email = "gagaro42@gmail.com"}
 ]
-requires-python = ">= 3.9"
+requires-python = ">= 3.10"
 dependencies = [
   "django",
 ]
@@ -27,11 +30,11 @@ classifiers = [
     "Framework :: Django",
     "Development Status :: 5 - Production/Stable",
     "Programming Language :: Python :: 3 :: Only",
-    "Programming Language :: Python :: 3.9",
     "Programming Language :: Python :: 3.10",
     "Programming Language :: Python :: 3.11",
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
+    "Programming Language :: Python :: 3.14",
 ]
 
 
